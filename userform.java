@@ -7,6 +7,12 @@ package personal.project;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,11 +26,7 @@ import javax.swing.JTextField;
  */
 public class userform {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-         // setting 'Add User Form' as the title for the JFrame
+   // setting 'Add User Form' as the title for the JFrame
         JFrame userForm=new JFrame("Add User Form");
         JPanel a=new JPanel();
         //adding a Label that instructs user to fill in details
@@ -44,10 +46,17 @@ public class userform {
         JTextField d=new JTextField();
         JTextField g=new JTextField();
         JTextField h=new JTextField();
+        ButtonGroup bg=new ButtonGroup();
+    Database connect=new Database();
+    public userform()
+    {
+           
         c.setColumns(20);
         d.setColumns(20);
         g.setColumns(20);
         h.setColumns(20);
+        bg.add(e);
+        bg.add(f);
         //adding buttons that enable the user clear information input or to login with what is set 
         JButton clear=new JButton("Clear");
         JButton saveUser=new JButton("Save User");
@@ -85,7 +94,11 @@ public class userform {
         a.add(clear);
         a.add(saveUser);
         userForm.add(a);
-         //layout for the JPanel
+        //actionlistener for saveuser
+        saveUser.addActionListener((java.awt.event.ActionEvent s)->{addactionPerformed(s);});
+        //actionlistener for clear button
+        clear.addActionListener((java.awt.event.ActionEvent z)->{clearactionPerformed(z);});
+         //layout for the JPaneljava.awt.event.ActionEvent e)->{addactionPerformed(e);}
         title.setBounds(800,60,400,40);
         firstName.setBounds(400,200,350,25);
         c.setBounds(550,200,1000,40);
@@ -106,8 +119,49 @@ public class userform {
         userForm.setSize(2000,1300);
         //setting how the gui will be closed by the user
         userForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        userForm.setVisible(true);
+        userForm.setVisible(true);   
+        
         
     }
-    
+      public void clearactionPerformed(ActionEvent z)
+     {
+        c.setText("");
+        d.setText("");
+        g.setText("");
+        h.setText("");
+        e.setText("");
+        f.setText("");
+        bg.clearSelection();
+    }
+     public void addactionPerformed(ActionEvent s)
+        {
+            Connection conn= connect.getConnection();
+            try
+            {
+                String Query ="insert into users(First_name,Last_name,Telephone,Date_of_Birth,Gender)Values('"+c.getText()+"','"+d.getText()+"','"+g.getText()+"','"+h.getText()+"','"+gender.getText()+"')";
+                if (e.isSelected())
+                {
+                    String Gender="Male";
+                }
+                else
+                {
+                    String Gender="Female";
+                }
+                PreparedStatement st = conn.prepareStatement(Query);
+                st.executeUpdate(); 
+                System.out.print("Added");
+            }
+            catch(SQLException ex)
+            {
+                System.out.print("NULL");
+            }
+        }
 }
+
+        
+    
+
+    
+    
+
+
